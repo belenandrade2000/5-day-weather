@@ -5,6 +5,7 @@ var weatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=21.161785
 
 var searchButton = document.querySelector("#weatherbtn")
 var input = document.querySelector("#city-input");
+
 // gives today's date using dayjs
 var today = dayjs();
 $("#date").text(today.format('MMM D, YYYY'));
@@ -25,8 +26,8 @@ $("#day-4").text(e.format('MMM D, YYYY'));
 const f = today.add(5, 'day')
 $("#day-5").text(f.format('MMM D, YYYY'));
 
-function searchApi(){
-    var locCityUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+input.value+"&appid=a8aad994de826937e53a4f435e492ae4"
+function searchApi(cityName){
+    var locCityUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+cityName+"&appid=a8aad994de826937e53a4f435e492ae4"
 
     fetch(locCityUrl)
         .then(function (response) {
@@ -64,6 +65,29 @@ function weatherAPI(lat,lon) {
     .then(function (data) {
         console.log(data)
 
+        
+
+        document.querySelector(".day-1").innerHTML="";
+        document.querySelector(".day-2").innerHTML="";
+        document.querySelector(".day-3").innerHTML="";
+        document.querySelector(".day-4").innerHTML="";
+        document.querySelector(".day-5").innerHTML="";
+
+        const b = today.add(1, 'day')
+        $(".day-1").text(b.format('MMM D, YYYY'));
+        
+        const c = today.add(2, 'day')
+        $(".day-2").text(c.format('MMM D, YYYY'));
+        
+        const d = today.add(3, 'day')
+        $(".day-3").text(d.format('MMM D, YYYY'));
+        
+        const e = today.add(4, 'day')
+        $(".day-4").text(e.format('MMM D, YYYY'));
+        
+        const f = today.add(5, 'day')
+        $(".day-5").text(f.format('MMM D, YYYY'));
+        
         //temperature
         var temp1 = document.createElement("div")
         temp1.textContent=("Temperature: "+ data.list[0].main.temp+"°F");
@@ -145,7 +169,45 @@ function weatherAPI(lat,lon) {
         document.querySelector(".day-4").append(humidity4);
         document.querySelector(".day-5").append(humidity5);
 
-})} 
+  
+
+})
+    fetch ("https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon="+ lon + "&units=imperial&appid=a8aad994de826937e53a4f435e492ae4")
+    .then(function (response) {
+        return response.json();
+})
+    .then(function (data) {
+        console.log(data)
+        document.querySelector(".city").innerHTML="";
+
+        var today = dayjs();
+        $("#date").text(today.format('MMM D, YYYY'));
+        console.log(today)
+
+        var cityName = document.createElement("div")
+        cityName.textContent=(data.name);
+        console.log(cityName)
+
+        var currentTemp = document.createElement("div")
+        currentTemp.textContent=("Temperature: "+ data.main.temp+"°F");
+        console.log(currentTemp)
+
+        var currentWind = document.createElement("div")
+        currentWind.textContent=("Wind: "+data.wind.speed+"mph");
+        console.log(currentWind)
+
+        var humidity6 = document.createElement("div")
+        humidity6.textContent=("Humidity: "+data.main.humidity+"%");
+        console.log(humidity6)
+
+
+        document.querySelector(".city").append(cityName);
+        document.querySelector(".city").append(currentTemp);
+        document.querySelector(".city").append(currentWind);
+        document.querySelector(".city").append(humidity6);
+    })
+
+} 
 
 // search button function
 function handleSearchButton (event) {
@@ -154,7 +216,20 @@ function handleSearchButton (event) {
     var cityInput = document.querySelector("input").value;
 
     searchApi(cityInput);
+    saveToLocalStorage(cityInput)
 }
+
+    function saveToLocalStorage (cityName) {
+        var searchHistory = [];
+
+        var storageContent = JSON.parse(localStorage.getItem("citysearch"));
+        searchHistory.push(cityName);
+
+        if (storageContent) {
+            searchHistory.push(storageContent)
+        } 
+        localStorage.setItem("citysearch",JSON.stringify(searchHistory))
+    }
 
 searchButton.addEventListener("click",handleSearchButton)
 
