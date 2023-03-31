@@ -226,7 +226,9 @@ function handleSearchButton (event) {
         searchHistory.push(cityName);
 
         if (storageContent) {
-            searchHistory.push(storageContent)
+            for(var i = 0; i  < storageContent.length; i++) {
+                searchHistory.push(storageContent[i])
+            }   
         } 
         localStorage.setItem("citysearch",JSON.stringify(searchHistory))
     }
