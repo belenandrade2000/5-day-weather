@@ -1,5 +1,5 @@
 
-var cityUrl = "http://api.openweathermap.org/geo/1.0/direct?q=cancun&appid=a8aad994de826937e53a4f435e492ae4"
+var cityUrl = "https://api.openweathermap.org/geo/1.0/direct?q=cancun&appid=a8aad994de826937e53a4f435e492ae4"
 var currentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=21.1617854&lon=-86.8510468&units=imperial&appid=a8aad994de826937e53a4f435e492ae4"
 var weatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=21.1617854&lon=-86.8510468&units=imperial&appid=a8aad994de826937e53a4f435e492ae4"
 
@@ -27,7 +27,7 @@ const f = today.add(5, 'day')
 $("#day-5").text(f.format('MMM D, YYYY'));
 
 function searchApi(cityName){
-    var locCityUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+cityName+"&appid=a8aad994de826937e53a4f435e492ae4"
+    var locCityUrl = "https://api.openweathermap.org/geo/1.0/direct?q="+cityName+"&appid=a8aad994de826937e53a4f435e492ae4"
 
     fetch(locCityUrl)
         .then(function (response) {
@@ -87,6 +87,8 @@ function weatherAPI(lat,lon) {
         
         const f = today.add(5, 'day')
         $(".day-5").text(f.format('MMM D, YYYY'));
+
+
         
         //temperature
         var temp1 = document.createElement("div")
@@ -114,6 +116,29 @@ function weatherAPI(lat,lon) {
         document.querySelector(".day-3").append(temp3);
         document.querySelector(".day-4").append(temp4);
         document.querySelector(".day-5").append(temp5);
+
+        // icon
+
+        var icon1 = document.createElement("img");
+        icon1.setAttribute("src", "https://openweathermap.org/img/wn/" + data.list[0].weather[0].icon +"@2x.png")
+
+        var icon2 = document.createElement("img");
+        icon2.setAttribute("src", "https://openweathermap.org/img/wn/" + data.list[8].weather[0].icon +"@2x.png")
+
+        var icon3 = document.createElement("img");
+        icon3.setAttribute("src", "https://openweathermap.org/img/wn/" + data.list[16].weather[0].icon +"@2x.png")
+
+        var icon4 = document.createElement("img");
+        icon4.setAttribute("src", "https://openweathermap.org/img/wn/" + data.list[24].weather[0].icon +"@2x.png")
+
+        var icon5 = document.createElement("img");
+        icon5.setAttribute("src", "https://openweathermap.org/img/wn/" + data.list[32].weather[0].icon +"@2x.png")
+
+        document.querySelector(".day-1").append(icon1);
+        document.querySelector(".day-2").append(icon2);
+        document.querySelector(".day-3").append(icon3);
+        document.querySelector(".day-4").append(icon4);
+        document.querySelector(".day-5").append(icon5);
 
         // wind
         var wind1 = document.createElement("div")
@@ -163,6 +188,9 @@ function weatherAPI(lat,lon) {
         humidity5.textContent=("Humidity: "+data.list[32].main.humidity+"%");
         console.log(humidity5)
 
+      
+
+
         document.querySelector(".day-1").append(humidity1 );
         document.querySelector(".day-2").append(humidity2);
         document.querySelector(".day-3").append(humidity3);
@@ -180,12 +208,11 @@ function weatherAPI(lat,lon) {
         console.log(data)
         document.querySelector(".city").innerHTML="";
 
-        var today = dayjs();
-        $("#date").text(today.format('MMM D, YYYY'));
-        console.log(today)
+        var icon = document.createElement("img");
+        icon.setAttribute("src", "https://openweathermap.org/img/wn/" + data.weather[0].icon +"@2x.png")
 
         var cityName = document.createElement("div")
-        cityName.textContent=(data.name);
+        cityName.textContent=(data.name +" "+ today.format('MMM D, YYYY'));
         console.log(cityName)
 
         var currentTemp = document.createElement("div")
@@ -202,6 +229,7 @@ function weatherAPI(lat,lon) {
 
 
         document.querySelector(".city").append(cityName);
+        document.querySelector(".city").append(icon);
         document.querySelector(".city").append(currentTemp);
         document.querySelector(".city").append(currentWind);
         document.querySelector(".city").append(humidity6);
@@ -231,7 +259,21 @@ function handleSearchButton (event) {
             }   
         } 
         localStorage.setItem("citysearch",JSON.stringify(searchHistory))
+
+        var cityHistory = document.createElement("button")
+        cityHistory.setAttribute("class", "btn btn-primary");
+
+        var capCityName = cityName.charAt(0).toUpperCase() +cityName.slice(1)
+
+        cityHistory.textContent = capCityName
+        document.querySelector(".city-buttons").append(cityHistory)
+
+        cityHistory.addEventListener("click",function(){
+            searchApi(cityHistory.textContent);
+        })
     }
+
+
 
 searchButton.addEventListener("click",handleSearchButton)
 
